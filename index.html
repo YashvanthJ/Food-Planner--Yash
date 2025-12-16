@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Professional Food Budget Planner with real-time pricing">
+  <title>FoodBudget Pro | Smart Meal Planning</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Loading Food Budget Pro...</p>
+    </div>
+  </div>
+
+  <!-- LOGIN/SIGNUP PAGE -->
+  <div class="login-bg" id="loginPage">
+    <div class="login-modal">
+      <div class="app-header">
+        <div class="app-logo">
+          <i class="fas fa-utensils"></i>
+          <h1>FoodBudget <span class="YASH">Yash</span></h1>
+        </div>
+        <p class="app-tagline">Smart grocery planning with real-time pricing</p>
+      </div>
+      
+      <div class="tab-bar">
+        <button id="loginTabBtn" class="tab-btn active" onclick="showTab('login')">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <button id="signupTabBtn" class="tab-btn" onclick="showTab('signup')">
+          <i class="fas fa-user-plus"></i> Sign Up
+        </button>
+      </div>
+      
+      <div id="loginTab" class="tab-content">
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="username" placeholder="Username" autocomplete="username">
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+          <button class="show-password" type="button" onclick="togglePassword('password')">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <button class="auth-btn" onclick="login()">
+          <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+        </button>
+        <p id="loginError" class="error-message"></p>
+      </div>
+      
+      <div id="signupTab" class="tab-content hidden">
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="newUsername" placeholder="Choose username" autocomplete="username">
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="newPassword" placeholder="Create password" autocomplete="new-password">
+          <button class="show-password" type="button" onclick="togglePassword('newPassword')">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="confirmPassword" placeholder="Confirm password" autocomplete="new-password">
+          <button class="show-password" type="button" onclick="togglePassword('confirmPassword')">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <button class="auth-btn" onclick="signup()">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+        <p id="signupError" class="error-message"></p>
+      </div>
+      
+      <div class="demo-credentials">
+        <p><strong>Demo Login:</strong> user / pass123</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING OPTION PAGE -->
+  <div class="pricing-option-page hidden" id="pricingOptionPage">
+    <div class="pricing-option-modal">
+      <div class="app-header">
+        <div class="app-logo">
+          <i class="fas fa-utensils"></i>
+          <h1>FoodBudget <span class="Yash">Yash</span></h1>
+        </div>
+        <p class="app-tagline">Choose your pricing method</p>
+      </div>
+      
+      <div class="pricing-options">
+        <div class="pricing-option-card" onclick="selectPricingOption('auto')">
+          <div class="option-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3>Auto Pricing</h3>
+          <p>Use our intelligent pricing system with real-time market data</p>
+          <ul class="option-features">
+            <li><i class="fas fa-check-circle"></i> Real-time price updates</li>
+            <li><i class="fas fa-check-circle"></i> Seasonal adjustments</li>
+            <li><i class="fas fa-check-circle"></i> Market trends analysis</li>
+          </ul>
+          <div class="option-footer">
+            <span class="option-badge">Recommended</span>
+          </div>
+        </div>
+        
+        <div class="pricing-option-card" onclick="selectPricingOption('custom')">
+          <div class="option-icon">
+            <i class="fas fa-edit"></i>
+          </div>
+          <h3>Custom Pricing</h3>
+          <p>Enter your own prices for complete control</p>
+          <ul class="option-features">
+            <li><i class="fas fa-check-circle"></i> Set custom prices</li>
+            <li><i class="fas fa-check-circle"></i> Multiple currencies</li>
+            <li><i class="fas fa-check-circle"></i> Adjust quantities</li>
+          </ul>
+          <div class="option-footer">
+            <span class="option-badge">Flexible</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="back-to-login">
+        <button onclick="goBackToLogin()" class="back-btn">
+          <i class="fas fa-arrow-left"></i> Back to Login
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM PRICING PAGE -->
+  <div class="custom-pricing-page hidden" id="customPricingPage">
+    <div class="custom-pricing-container">
+      <div class="custom-pricing-header">
+        <div class="header-left">
+          <button onclick="goBackToPricingOptions()" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <div class="header-title">
+            <h2><i class="fas fa-edit"></i> Custom Pricing Setup</h2>
+            <p>Enter your own prices and quantities</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="currency-section">
+            <div class="currency-selector">
+              <label for="currency"><i class="fas fa-money-bill-wave"></i> Currency:</label>
+              <select id="currency" onchange="changeCurrency()">
+                <option value="USD">USD ($)</option>
+                <option value="INR">INR (₹)</option>
+              </select>
+            </div>
+            <div class="conversion-options">
+              <label>Conversion Rate:</label>
+              <div class="conversion-radio-group">
+                <div class="radio-option">
+                  <input type="radio" id="rate1" name="conversionRate" value="1" checked onchange="changeConversionType(1)">
+                  <label for="rate1">1 INR = 1 INR</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="rate2" name="conversionRate" value="2" onchange="changeConversionType(2)">
+                  <label for="rate2">1 USD = 1 USD</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="rate3" name="conversionRate" value="3" onchange="changeConversionType(3)">
+                  <label for="rate3">
+                    <span>1 INR = </span>
+                    <input type="number" id="inrToUsdRate" step="0.0001" min="0.0001" value="0.012" onchange="updateCustomRate('inrToUsd', this.value)" class="rate-input">
+                    <span>USD</span>
+                  </label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="rate4" name="conversionRate" value="4" onchange="changeConversionType(4)">
+                  <label for="rate4">
+                    <span>1 USD = </span>
+                    <input type="number" id="usdToInrRate" step="0.01" min="1" value="83.50" onchange="updateCustomRate('usdToInr', this.value)" class="rate-input">
+                    <span>INR</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="custom-pricing-content">
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+          <button class="category-tab active" onclick="showCategory('vegetables')">
+            <i class="fas fa-leaf"></i> Vegetables
+          </button>
+          <button class="category-tab" onclick="showCategory('staples')">
+            <i class="fas fa-wheat-awn"></i> Staples
+          </button>
+          <button class="category-tab" onclick="showCategory('dairy')">
+            <i class="fas fa-egg"></i> Dairy
+          </button>
+          <button class="category-tab" onclick="showCategory('meat')">
+            <i class="fas fa-drumstick-bite"></i> Meat
+          </button>
+          <button class="category-tab" onclick="showCategory('essentials')">
+            <i class="fas fa-box"></i> Essentials
+          </button>
+        </div>
+        
+        <!-- Custom Pricing Form -->
+        <div class="custom-pricing-form">
+          <div class="form-header">
+            <h3 id="currentCategory">Vegetables</h3>
+            <button onclick="applyDefaultPrices()" class="default-price-btn">
+              <i class="fas fa-sync-alt"></i> Apply Default Prices
+            </button>
+          </div>
+          
+          <div class="custom-items-grid" id="customItemsGrid">
+            <!-- Items will be loaded here -->
+          </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <div class="action-buttons">
+            <button onclick="saveCustomPrices()" class="save-btn">
+              <i class="fas fa-save"></i> Save & Continue to Dashboard
+            </button>
+            <button onclick="resetCustomPrices()" class="reset-btn">
+              <i class="fas fa-redo"></i> Reset All Prices
+            </button>
+          </div>
+          <div class="total-estimate">
+            <span>Estimated Total:</span>
+            <span id="customTotalEstimate">$0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD PAGE -->
+  <div class="dashboard hidden" id="dashboardPage">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <div class="brand">
+          <i class="fas fa-utensils"></i>
+          <div>
+            <h2>FoodBudget <span class="pro-badge">Yash</span></h2>
+            <p class="welcome-text">Welcome back, <span id="userNameLabel" class="username"></span>!</p>
+            <p class="pricing-mode" id="pricingMode">
+              <i class="fas fa-money-bill-wave"></i> 
+              <span id="pricingModeText">Auto Pricing</span>
+              <button onclick="changePricingMode()" class="mode-change-btn">
+                <i class="fas fa-exchange-alt"></i> Change
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="date-display">
+          <i class="fas fa-calendar-alt"></i>
+          <span id="currentDate"></span>
+        </div>
+        <div class="currency-display" id="currencyDisplay">
+          <i class="fas fa-dollar-sign"></i> USD
+        </div>
+        <button onclick="logout()" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+      <!-- Planner Controls -->
+      <section class="planner-section">
+        <div class="section-header">
+          <h3><i class="fas fa-calculator"></i> Budget Planner</h3>
+          <button onclick="resetPlanner()" class="reset-btn">
+            <i class="fas fa-redo"></i> Reset
+          </button>
+        </div>
+        
+        <div class="planner-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="budget"><i class="fas fa-wallet"></i> Total Budget</label>
+              <div class="input-with-icon">
+                <span class="currency" id="budgetCurrency">$</span>
+                <input type="number" id="budget" min="10" max="10000" step="10" 
+                       placeholder="e.g., 500" value="200">
+              </div>
+              <div class="budget-slider">
+                <input type="range" id="budgetSlider" min="50" max="1000" step="50" value="200">
+                <div class="slider-labels">
+                  <span id="minBudget">$50</span>
+                  <span id="maxBudget">$1000</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="people"><i class="fas fa-users"></i> Number of People</label>
+              <input type="number" id="people" min="1" max="20" value="4" placeholder="e.g., 4">
+            </div>
+            
+            <div class="form-group">
+              <label><i class="fas fa-calendar"></i> Planning Period</label>
+              <div class="period-selector">
+                <button class="period-btn active" data-period="day" onclick="selectPeriod('day')">Day</button>
+                <button class="period-btn" data-period="week" onclick="selectPeriod('week')">Week</button>
+                <button class="period-btn" data-period="month" onclick="selectPeriod('month')">Month</button>
+              </div>
+              <input type="hidden" id="period" value="week">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label><i class="fas fa-utensils"></i> Dietary Preferences</label>
+              <div class="preference-checkboxes">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="vegCheck" checked onchange="updateFoodGrid()">
+                  <span class="checkmark"></span>
+                  <i class="fas fa-leaf"></i> Vegetarian
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="nonvegCheck" checked onchange="updateFoodGrid()">
+                  <span class="checkmark"></span>
+                  <i class="fas fa-drumstick-bite"></i> Non-Vegetarian
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group search-group">
+              <label for="foodSearch"><i class="fas fa-search"></i> Search Ingredients</label>
+              <div class="search-box">
+                <input type="text" id="foodSearch" placeholder="Search vegetables, meats, staples..." oninput="filterFoods()">
+                <button onclick="clearSearch()" class="clear-search">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Food Selection -->
+      <section class="food-section">
+        <div class="section-header">
+          <h3><i class="fas fa-shopping-cart"></i> Select Ingredients</h3>
+          <div class="selection-info">
+            <span id="selCount">0</span>/35 items selected
+          </div>
+        </div>
+        
+        <div class="food-container">
+          <!-- Food Grid -->
+          <div class="food-grid-container">
+            <div class="food-grid" id="foodGrid"></div>
+            <div class="grid-info">
+              <i class="fas fa-info-circle"></i>
+              Click items to select. Prices update in real-time.
+              <span id="customPriceNote" class="hidden">(Custom prices applied)</span>
+            </div>
+          </div>
+          
+          <!-- Selected Panel -->
+          <div class="selected-panel">
+            <div class="panel-header">
+              <h4><i class="fas fa-list"></i> Selected Items</h4>
+              <div class="quantity-controls-info">
+                <i class="fas fa-info-circle"></i>
+                Adjust quantities (0-20)
+              </div>
+            </div>
+            <div class="selected-list" id="selectedList">
+              <p class="empty-message">No items selected yet</p>
+            </div>
+            <div class="panel-footer">
+              <button onclick="clearAllSelected()" class="clear-all-btn">
+                <i class="fas fa-trash"></i> Clear All
+              </button>
+              <div class="estimated-cost">
+                <span>Estimated Cost:</span>
+                <span id="estimatedCost">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Generate Button -->
+      <div class="generate-section">
+        <button id="generateBtn" class="generate-btn" onclick="generateList()">
+          <i class="fas fa-magic"></i> Generate Smart Shopping List
+        </button>
+        <div class="loading-indicator hidden" id="generatingLoader">
+          <div class="spinner"></div>
+          <span>Fetching real-time prices...</span>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <section class="results-section">
+        <div class="section-header">
+          <h3><i class="fas fa-clipboard-list"></i> Your Shopping List</h3>
+          <div class="result-actions">
+            <button onclick="printList()" class="action-btn">
+              <i class="fas fa-print"></i> Print
+            </button>
+            <button onclick="exportList()" class="action-btn">
+              <i class="fas fa-download"></i> Export
+            </button>
+          </div>
+        </div>
+        <div id="result" class="result-content">
+          <div class="empty-result">
+            <i class="fas fa-shopping-basket"></i>
+            <p>Your personalized shopping list will appear here</p>
+            <p class="hint">Fill in your budget and select ingredients to generate</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+      <p>
+        <i class="fas fa-sync-alt"></i> 
+        <span id="pricingInfo">Prices update daily from multiple grocery APIs</span>
+        <span id="lastUpdate" class="update-time"></span>
+      </p>
+      <p class="footer-note">
+        *Prices are estimates based on current market data. Actual store prices may vary.
+      </p>
+      <p>Designed by Yash</p>
+    </footer>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="notificationToast" class="notification-toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
